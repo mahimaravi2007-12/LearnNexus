@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnStream AI • Next-Gen AI Learning Platform</title>
+  <meta name="description" content="AI-powered educational platform featuring smart topic search, auto notes synthesis, interactive quizzes, realistic mock tests, voice search, and personalized performance analysis.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Confetti Particle Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+    
+    <!-- ================== SIDEBAR NAVIGATION ================== -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon-wrap">
+          <i class="fas fa-brain"></i>
+        </div>
+        <div>
+          <div class="brand-title">LearnStream<span class="brand-badge">AI 2.0</span></div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-label" data-i18n="dashboard">Main Hub</div>
+        <button class="nav-item active" data-tab="dashboard" onclick="window.app.switchTab('dashboard')">
+          <i class="fas fa-chart-pie"></i>
+          <span data-i18n="dashboard">Dashboard</span>
+        </button>
+        <button class="nav-item" data-tab="videos" onclick="window.app.switchTab('videos')">
+          <i class="fas fa-compass"></i>
+          <span data-i18n="exploreVideos">AI Video Hub</span>
+          <span class="nav-badge-pill">Hot</span>
+        </button>
+        <button class="nav-item" data-tab="notes" onclick="window.app.switchTab('notes')">
+          <i class="fas fa-file-invoice"></i>
+          <span data-i18n="autoNotes">Auto Notes AI</span>
+        </button>
+
+        <div class="nav-section-label" data-i18n="quizZone">Assessments & Practice</div>
+        <button class="nav-item" data-tab="quizzes" onclick="window.app.switchTab('quizzes')">
+          <i class="fas fa-bolt"></i>
+          <span data-i18n="quizZone">AI Quiz & Recall</span>
+        </button>
+        <button class="nav-item" data-tab="tests" onclick="window.app.switchTab('tests')">
+          <i class="fas fa-clipboard-check"></i>
+          <span data-i18n="mockTests">Mock Tests & Exams</span>
+        </button>
+        <button class="nav-item" data-tab="analytics" onclick="window.app.switchTab('analytics')">
+          <i class="fas fa-brain"></i>
+          <span data-i18n="analytics">Performance Analysis</span>
+        </button>
+
+        <div class="nav-section-label" data-i18n="aiTutor">Personal Assistance</div>
+        <button class="nav-item" data-tab="copilot" onclick="window.app.switchTab('copilot')">
+          <i class="fas fa-robot"></i>
+          <span data-i18n="aiTutor">AI Tutor Copilot</span>
+        </button>
+        <button class="nav-item" data-tab="saved" onclick="window.app.switchTab('saved')">
+          <i class="fas fa-bookmark"></i>
+          <span data-i18n="savedLibrary">Saved Library</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-mini-card">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Avatar" class="user-avatar">
+          <div class="user-details">
+            <div class="user-name">Alex Rivera</div>
+            <div class="user-tier">Advanced Scholar • Lvl 7</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ================== MAIN VIEWPORT ================== -->
+    <main class="main-viewport">
+
+      <!-- Top Header Bar -->
+      <header class="app-header">
+        <button class="mobile-menu-toggle" onclick="document.getElementById('app-sidebar').classList.toggle('mobile-open')">
+          <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Smart Topic Search Input -->
+        <div class="header-search-wrapper">
+          <i class="fas fa-search search-icon-left"></i>
+          <input type="text" 
+                 id="main-search-input" 
+                 class="header-search-input" 
+                 placeholder="Search topics, concepts, videos, or algorithms (e.g., 'Backpropagation', 'Dijkstra')..."
+                 data-i18n-placeholder="searchPlaceholder"
+                 oninput="window.app.handleSearchInput(event)">
+          <div class="search-actions-right">
+            <button class="voice-search-btn" onclick="window.app.openVoiceSearch()" title="Voice Search">
+              <i class="fas fa-microphone"></i>
+            </button>
+            <span class="kbd-shortcut">Ctrl+K</span>
+          </div>
+        </div>
+
+        <!-- Right Controls: Language & Theme -->
+        <div class="header-right-controls">
+          <div class="lang-selector-wrap">
+            <select id="global-language-selector" class="lang-select" onchange="window.app.setLanguage(this.value)">
+              <option value="en">🇺🇸 English</option>
+              <option value="es">🇪🇸 Español</option>
+              <option value="hi">🇮🇳 हिन्दी</option>
+              <option value="fr">🇫🇷 Français</option>
+              <option value="de">🇩🇪 Deutsch</option>
+              <option value="ja">🇯🇵 日本語</option>
+            </select>
+          </div>
+
+          <button class="theme-toggle-btn" onclick="window.app.toggleTheme()" title="Toggle Dark / Light Mode">
+            <i class="fas fa-sun" id="theme-toggle-icon"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- ========================================================
+           PANEL 1: DASHBOARD
+           ======================================================== -->
+      <section class="view-panel active" id="panel-dashboard">
+        <!-- Hero Greeting -->
+        <div class="hero-greeting-card">
+          <div class="greeting-text">
+            <h1><span data-i18n="welcomeBack">Welcome back</span>, <span id="dash-user-name">Alex</span>! 🚀</h1>
+            <p>You have a 14-day study streak! Your AI Tutor recommends reviewing <strong>Quantum State Vectors</strong> and finishing the <strong>AI Certification Mock Test</strong> today.</p>
+          </div>
+          <div class="hero-quick-actions">
+            <button class="btn btn-primary" onclick="window.app.switchTab('tests')">
+              <i class="fas fa-play"></i> <span data-i18n="startTest">Start Mock Test</span>
+            </button>
+            <button class="btn btn-secondary" onclick="window.app.switchTab('notes')">
+              <i class="fas fa-file-alt"></i> <span data-i18n="genNotes">Generate Notes</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards -->
+        <div class="stats-cards-grid">
+          <div class="stat-card">
+            <div class="stat-icon-wrap icon-fire"><i class="fas fa-fire"></i></div>
+            <div class="stat-info-wrap">
+              <div class="stat-label" data-i18n="dailyStreak">Day Streak</div>
+              <div class="stat-value" id="dash-stat-streak">14d</div>
+              <div class="stat-sub"><i class="fas fa-arrow-up"></i> Top 5% Consistency</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap icon-clock"><i class="fas fa-clock"></i></div>
+            <div class="stat-info-wrap">
+              <div class="stat-label" data-i18n="studyHours">Study Hours</div>
+              <div class="stat-value" id="dash-stat-hours">48.5h</div>
+              <div class="stat-sub"><i class="fas fa-calendar-check"></i> +3.8h this week</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap icon-chart"><i class="fas fa-bullseye"></i></div>
+            <div class="stat-info-wrap">
+              <div class="stat-label" data-i18n="avgAccuracy">Avg Accuracy</div>
+              <div class="stat-value" id="dash-stat-accuracy">88%</div>
+              <div class="stat-sub"><i class="fas fa-shield-alt"></i> Verified mastery</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap icon-award"><i class="fas fa-trophy"></i></div>
+            <div class="stat-info-wrap">
+              <div class="stat-label" data-i18n="rankScore">Learning XP</div>
+              <div class="stat-value" id="dash-stat-xp">3,420 XP</div>
+              <div class="stat-sub">Level 7 Scholar</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Split Row 1: Radar Mastery + Streak Heatmap & Badges -->
+        <div class="dash-split-row">
+          <!-- Radar Mastery Chart -->
+          <div class="dash-panel-card">
+            <div class="panel-card-header">
+              <h3 data-i18n="radarTitle"><i class="fas fa-spider text-primary"></i> Cognitive Mastery Matrix</h3>
+              <button class="btn btn-sm btn-secondary" onclick="window.app.switchTab('analytics')">
+                View Diagnostics <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="radar-mastery-canvas"></canvas>
+            </div>
+          </div>
+
+          <!-- Heatmap & Badges -->
+          <div class="dash-panel-card">
+            <div class="panel-card-header">
+              <h3><i class="fas fa-calendar-alt text-warning"></i> 14-Day Study Activity</h3>
+            </div>
+            <div class="streak-heatmap-wrap">
+              <div class="streak-heatmap-grid" id="streak-heatmap-grid"></div>
+            </div>
+            <h4 style="font-size: 14px; margin-bottom: 12px; color: var(--text-secondary);">Earned Mastery Badges</h4>
+            <div class="badges-row" id="dash-badges-row"></div>
+          </div>
+        </div>
+
+        <!-- Split Row 2: Weekly Hours + Resume Lessons -->
+        <div class="dash-split-row">
+          <!-- Weekly Study Hours Bar Chart -->
+          <div class="dash-panel-card">
+            <div class="panel-card-header">
+              <h3 data-i18n="weeklyProgress"><i class="fas fa-chart-bar text-cyan"></i> Weekly Study Trajectory</h3>
+              <span style="font-size: 12px; color: var(--accent-emerald);">● Target: 2.0h/day</span>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="weekly-hours-canvas"></canvas>
+            </div>
+          </div>
+
+          <!-- Quick Resume Lessons -->
+          <div class="dash-panel-card">
+            <div class="panel-card-header">
+              <h3><i class="fas fa-play-circle text-primary"></i> Continue Learning</h3>
+              <button class="btn btn-sm btn-secondary" onclick="window.app.switchTab('videos')">Explore All</button>
+            </div>
+            <div class="dash-resume-grid" id="dash-resume-grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PANEL 2: AI VIDEO HUB & SMART SEARCH
+           ======================================================== -->
+      <section class="view-panel" id="panel-videos">
+        <div style="margin-bottom: 24px;">
+          <h1 style="font-size: 26px; margin-bottom: 6px;" data-i18n="exploreVideos">AI Educational Video Hub</h1>
+          <p style="color: var(--text-secondary); font-size: 14px;">Curated lecture videos analyzed by LearnStream AI with key takeaways, timestamps, and instant note synthesis.</p>
+        </div>
+
+        <!-- Topic Filter Pills -->
+        <div class="topic-filter-bar">
+          <button class="topic-filter-pill active" data-subject="all" onclick="window.app.filterVideosBySubject('all')">
+            <i class="fas fa-globe"></i> All Disciplines
+          </button>
+          <button class="topic-filter-pill" data-subject="ai-ml" onclick="window.app.filterVideosBySubject('ai-ml')">
+            <i class="fas fa-brain"></i> AI & Machine Learning
+          </button>
+          <button class="topic-filter-pill" data-subject="dsa" onclick="window.app.filterVideosBySubject('dsa')">
+            <i class="fas fa-code-branch"></i> Data Structures
+          </button>
+          <button class="topic-filter-pill" data-subject="quantum" onclick="window.app.filterVideosBySubject('quantum')">
+            <i class="fas fa-atom"></i> Quantum Physics
+          </button>
+          <button class="topic-filter-pill" data-subject="neuroscience" onclick="window.app.filterVideosBySubject('neuroscience')">
+            <i class="fas fa-dna"></i> Neuroscience
+          </button>
+          <button class="topic-filter-pill" data-subject="webdev" onclick="window.app.filterVideosBySubject('webdev')">
+            <i class="fas fa-laptop-code"></i> Modern Web Dev
+          </button>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+          <div id="video-results-count" style="font-size: 13.5px; color: var(--text-muted); font-weight: 600;">6 lessons matched</div>
+        </div>
+
+        <!-- Video Cards Grid -->
+        <div class="video-results-grid" id="video-results-grid"></div>
+      </section>
+
+      <!-- ========================================================
+           PANEL 3: AUTO NOTES GENERATOR AI
+           ======================================================== -->
+      <section class="view-panel" id="panel-notes">
+        <div style="margin-bottom: 24px;">
+          <h1 style="font-size: 26px; margin-bottom: 6px;" data-i18n="autoNotes">Auto Notes Generator AI</h1>
+          <p style="color: var(--text-secondary); font-size: 14px;">Instant executive summaries, mathematical formulations, concept breakdowns, and flippable flashcards exported directly to PDF.</p>
+        </div>
+
+        <div class="notes-container-layout">
+          <!-- Left Control Sidebar -->
+          <div class="notes-generator-sidebar">
+            <h3 style="font-size: 17px; margin-bottom: 16px;"><i class="fas fa-magic text-primary"></i> Synthesize New Notes</h3>
+            
+            <div class="form-group">
+              <label class="form-label">Or Pick From Verified Library</label>
+              <select id="preloaded-notes-selector" class="form-select" onchange="window.app.onSelectPreloadedNote(event)"></select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Enter Any Concept, Topic, or Theorem</label>
+              <input type="text" id="custom-note-topic-input" class="form-input" placeholder="e.g. FlashAttention, Fourier Transform...">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Pedagogical Tone / Depth</label>
+              <select id="custom-note-style-select" class="form-select">
+                <option value="academic">Academic & Rigorous (with Proofs)</option>
+                <option value="cheatsheet">Executive Cheat-Sheet</option>
+                <option value="analogy">Intuitive & Analogy-Driven</option>
+              </select>
+            </div>
+
+            <button class="btn btn-primary btn-block" id="btn-generate-notes" onclick="window.app.generateCustomNote()">
+              <i class="fas fa-magic"></i> Generate Structured Notes
+            </button>
+
+            <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-subtle);">
+              <h4 style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Export & Study Options</h4>
+              <button class="btn btn-outline-primary btn-block" onclick="window.app.downloadCurrentNotePDF()">
+                <i class="fas fa-file-pdf"></i> <span data-i18n="downloadPdf">Download PDF Study Guide</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Notes Display Panel -->
+          <div class="notes-display-panel" id="notes-content-display">
+            <div class="note-header-actions">
+              <div>
+                <h1 class="note-display-title" id="note-display-title">Neural Networks & Backpropagation</h1>
+                <div class="note-display-meta" id="note-display-meta">7 min read • Verified AI Study Syllabus</div>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="window.app.downloadCurrentNotePDF()">
+                <i class="fas fa-download"></i> PDF
+              </button>
+            </div>
+
+            <div class="executive-summary-box">
+              <strong>Executive Summary:</strong>
+              <div id="note-display-summary" style="margin-top: 4px;">A world-class visual breakdown of how multi-layer perceptrons compute gradients using the chain rule, transforming cost function surfaces into optimal weight trajectories.</div>
+            </div>
+
+            <!-- Formulas Grid -->
+            <div>
+              <h3 style="font-size: 17px; margin-bottom: 12px; color: var(--accent-primary);">Core Mathematical Formulations</h3>
+              <div class="note-formula-grid" id="note-display-formulas"></div>
+            </div>
+
+            <!-- Deep Dive Sections -->
+            <div id="note-display-sections" style="margin-top: 24px;"></div>
+
+            <!-- 3D Flashcards Shelf -->
+            <div class="flashcards-shelf">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 18px;"><i class="fas fa-clone text-primary"></i> Active Recall Flashcards</h3>
+                <span style="font-size: 12px; color: var(--text-muted);"><i class="fas fa-hand-pointer"></i> Click card to flip</span>
+              </div>
+              <div class="flashcards-grid" id="note-display-flashcards"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PANEL 4: AI QUIZ & FLASHCARDS
+           ======================================================== -->
+      <section class="view-panel" id="panel-quizzes">
+        <div style="margin-bottom: 24px;">
+          <h1 style="font-size: 26px; margin-bottom: 6px;" data-i18n="quizZone">AI Quiz & Active Recall Zone</h1>
+          <p style="color: var(--text-secondary); font-size: 14px;">Adaptive quizzes with instant step-by-step explanations, streak multipliers, and XP rewards.</p>
+        </div>
+
+        <!-- Quiz Selection Screen -->
+        <div id="quiz-selection-panel">
+          <div class="quiz-selection-cards" id="quiz-selection-cards"></div>
+        </div>
+
+        <!-- Active Quiz Arena Screen -->
+        <div class="quiz-active-arena" id="quiz-active-arena" style="display: none;">
+          <div class="quiz-arena-header">
+            <span class="subject-pill" id="quiz-arena-topic">Deep Learning</span>
+            <span style="font-size: 13.5px; font-weight: 600; color: var(--text-muted);" id="quiz-progress-text">Question 1 of 5</span>
+          </div>
+          <div class="quiz-progress-bar-track">
+            <div class="quiz-progress-fill" id="quiz-progress-fill" style="width: 20%;"></div>
+          </div>
+
+          <div class="quiz-prompt-text" id="quiz-prompt-text">Question prompt goes here...</div>
+
+          <!-- Options Container -->
+          <div class="quiz-options-container" id="quiz-options-container"></div>
+
+          <!-- Hint Box -->
+          <div class="quiz-hint-box" id="quiz-hint-box" style="display: none;"></div>
+
+          <!-- Explanation Callout -->
+          <div class="quiz-explanation-callout" id="quiz-explanation-box" style="display: none;"></div>
+
+          <div class="quiz-arena-footer">
+            <button class="btn btn-secondary btn-sm" onclick="window.app.toggleQuizHint()">
+              <i class="fas fa-lightbulb"></i> Need a Hint?
+            </button>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-secondary btn-sm" onclick="window.app.exitQuiz()">Exit</button>
+              <button class="btn btn-primary" id="quiz-next-question-btn" style="display: none;" onclick="window.app.nextQuizQuestion()">
+                Next Question <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quiz Completion Screen -->
+        <div class="quiz-completion-card" id="quiz-completion-card" style="display: none;">
+          <div class="trophy-glow-icon"><i class="fas fa-trophy"></i></div>
+          <h2 style="font-size: 24px; margin-bottom: 6px;">Quiz Mastered!</h2>
+          <p style="color: var(--text-secondary); font-size: 14px;">You demonstrated remarkable conceptual grasp and active recall.</p>
+          <div class="quiz-final-score-val" id="quiz-final-score">5 / 5</div>
+          <div style="font-weight: 600; color: var(--accent-emerald); margin-bottom: 24px;" id="quiz-final-pct">100% Accuracy (+125 XP)</div>
+          <div style="display: flex; gap: 12px; justify-content: center;">
+            <button class="btn btn-secondary" onclick="window.app.restartQuiz()">
+              <i class="fas fa-redo"></i> Retake Quiz
+            </button>
+            <button class="btn btn-primary" onclick="window.app.exitQuiz()">
+              <i class="fas fa-check"></i> Choose Another Topic
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PANEL 5: ONLINE TESTS & MOCK TESTS
+           ======================================================== -->
+      <section class="view-panel" id="panel-tests">
+        <!-- Test Selection List -->
+        <div id="mock-test-selection-list">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 26px; margin-bottom: 6px;" data-i18n="mockTests">Full-Length Online Mock Tests</h1>
+            <p style="color: var(--text-secondary); font-size: 14px;">Simulate authentic technical exam conditions with timed countdown, question palette, review tagging, and instant performance diagnostics.</p>
+          </div>
+          <div class="mock-tests-cards-grid" id="mock-tests-cards-grid"></div>
+        </div>
+
+        <!-- Live Exam Hall Chamber -->
+        <div class="mock-test-chamber" id="mock-test-chamber" style="display: none;">
+          <div class="exam-hall-header">
+            <div>
+              <h3 id="exam-hall-title" style="font-size: 18px;">Exam Title</h3>
+              <div style="font-size: 12px; color: var(--text-muted);"><i class="fas fa-shield-alt"></i> Proctored Academic Mode</div>
+            </div>
+            <div class="exam-timer-pill" id="test-timer-display">20:00</div>
+          </div>
+
+          <div class="exam-chamber-layout">
+            <!-- Left Workspace -->
+            <div class="exam-left-workspace" id="test-active-question-card">
+              <!-- Rendered dynamically by window.testEngine -->
+            </div>
+
+            <!-- Right Question Palette -->
+            <div class="exam-right-palette">
+              <h4 style="font-size: 14px; margin-bottom: 12px;">Question Palette</h4>
+              
+              <div class="palette-status-legend">
+                <div class="legend-item"><div class="legend-dot dot-answered"></div> Answered (<span id="palette-count-answered">0</span>)</div>
+                <div class="legend-item"><div class="legend-dot dot-flagged"></div> Flagged (<span id="palette-count-flagged">0</span>)</div>
+                <div class="legend-item"><div class="legend-dot dot-unvisited"></div> Remaining (<span id="palette-count-unanswered">0</span>)</div>
+              </div>
+
+              <div class="palette-grid" id="test-question-palette">
+                <!-- Rendered dynamically -->
+              </div>
+
+              <div class="palette-footer-submit">
+                <button class="btn btn-primary btn-block" onclick="window.testEngine.confirmSubmit()">
+                  <i class="fas fa-paper-plane"></i> Submit Test
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Test Results & Review Diagnostic View -->
+        <div class="mock-test-results-view" id="mock-test-results-view" style="display: none;">
+          <div class="results-header-banner">
+            <div>
+              <div class="badge" id="res-status-badge" style="font-size: 12px; font-weight: 700;">PASSED</div>
+              <h2 id="res-test-title" style="font-size: 24px; margin-top: 6px;">Certification Test Results</h2>
+              <div style="font-size: 13px; color: var(--text-muted);">Verified Performance Diagnostic</div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="btn btn-outline-primary" onclick="window.testEngine.downloadResultPDF()">
+                <i class="fas fa-file-pdf"></i> Download Diagnostic Report
+              </button>
+              <button class="btn btn-secondary" onclick="window.testEngine.exitTest()">
+                <i class="fas fa-arrow-left"></i> Exit to Exam List
+              </button>
+            </div>
+          </div>
+
+          <div class="results-score-row">
+            <div class="score-donut-box">
+              <canvas id="result-score-donut"></canvas>
+            </div>
+            <div class="score-metrics-summary">
+              <div class="metric-tile">
+                <div class="metric-tile-val" id="res-score-badge">0 / 0</div>
+                <div class="metric-tile-lbl">Total Score</div>
+              </div>
+              <div class="metric-tile">
+                <div class="metric-tile-val" id="res-accuracy-pill">0%</div>
+                <div class="metric-tile-lbl">Accuracy Percentage</div>
+              </div>
+              <div class="metric-tile">
+                <div class="metric-tile-val" id="res-time-spent">00:00</div>
+                <div class="metric-tile-lbl">Time Elapsed</div>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 18px; margin-bottom: 16px;"><i class="fas fa-list-check text-primary"></i> Comprehensive Question-by-Question Review</h3>
+          <div id="res-review-cards-list"></div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PANEL 6: PERFORMANCE ANALYSIS
+           ======================================================== -->
+      <section class="view-panel" id="panel-analytics">
+        <div style="margin-bottom: 24px;">
+          <h1 style="font-size: 26px; margin-bottom: 6px;" data-i18n="analytics">Cognitive Performance Diagnostics</h1>
+          <p style="color: var(--text-secondary); font-size: 14px;">Multi-dimensional mastery matrix comparing your aptitude against global cohorts with actionable AI prescriptions.</p>
+        </div>
+
+        <div class="analytics-grid-layout">
+          <!-- Radar Analysis -->
+          <div class="dash-panel-card">
+            <div class="panel-card-header">
+              <h3><i class="fas fa-brain text-primary"></i> Multi-Dimensional Mastery Radar</h3>
+              <span style="font-size: 12px; color: var(--accent-secondary);">🟣 You • ⚪ Cohort Average</span>
+            </div>
+            <div class="chart-canvas-wrap" style="height: 320px;">
+              <canvas id="analytics-radar-canvas"></canvas>
+            </div>
+          </div>
+
+          <!-- Topic Strengths & Weaknesses -->
+          <div class="dash-panel-card">
+            <div class="panel-card-header">
+              <h3><i class="fas fa-chart-line text-cyan"></i> Topic-Level Proficiency Breakdown</h3>
+            </div>
+            <div id="analytics-topics-list"></div>
+          </div>
+        </div>
+
+        <div class="dash-panel-card" style="margin-top: 24px;">
+          <div class="panel-card-header">
+            <h3><i class="fas fa-robot text-primary"></i> Personalized AI Prescriptions & Remedial Roadmap</h3>
+          </div>
+          <div id="analytics-prescriptions-list"></div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PANEL 7: AI TUTOR COPILOT (FULL SCREEN)
+           ======================================================== -->
+      <section class="view-panel" id="panel-copilot">
+        <div class="copilot-container-layout">
+          <!-- Left Prompt Suggestions -->
+          <div class="copilot-sidebar-pills">
+            <h3 style="font-size: 15px; margin-bottom: 6px;"><i class="fas fa-magic text-primary"></i> Prompt Starters</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Click any prompt to instantly query your tutor:</p>
+
+            <button class="quick-prompt-pill" onclick="window.aiCopilot.sendMessage('Explain Backpropagation with a simple analogy', 'copilot-messages-container')">
+              💡 <strong>Explain Backpropagation</strong> with a simple analogy
+            </button>
+            <button class="quick-prompt-pill" onclick="window.aiCopilot.sendMessage('What is the difference between BatchNorm and LayerNorm?', 'copilot-messages-container')">
+              ⚖️ <strong>BatchNorm vs LayerNorm</strong> difference
+            </button>
+            <button class="quick-prompt-pill" onclick="window.aiCopilot.sendMessage('Show me an implementation of Dijkstra in Python', 'copilot-messages-container')">
+              🐍 <strong>Dijkstra Algorithm</strong> in Python
+            </button>
+            <button class="quick-prompt-pill" onclick="window.aiCopilot.sendMessage('Explain Quantum Superposition and Bell States', 'copilot-messages-container')">
+              ⚛️ <strong>Quantum Superposition</strong> and Bell States
+            </button>
+            <button class="quick-prompt-pill" onclick="window.aiCopilot.sendMessage('Explain the JavaScript Event Loop microtask priority', 'copilot-messages-container')">
+              🔄 <strong>JavaScript Event Loop</strong> & Microtasks
+            </button>
+
+            <div style="margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
+              <button class="btn btn-secondary btn-block btn-sm" onclick="window.aiCopilot.clearChat('copilot-messages-container')">
+                <i class="fas fa-trash-alt"></i> Clear Chat History
+              </button>
+            </div>
+          </div>
+
+          <!-- Chat Arena -->
+          <div class="copilot-chat-arena">
+            <div class="copilot-chat-header">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="brand-icon-wrap" style="width: 32px; height: 32px; font-size: 15px;">
+                  <i class="fas fa-robot"></i>
+                </div>
+                <div>
+                  <h4 style="font-size: 15px;">LearnStream AI Copilot</h4>
+                  <div style="font-size: 11.5px; color: #10b981;">● Online • Context: Academic Specialist</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="copilot-messages-container" id="copilot-messages-container"></div>
+
+            <div class="chat-input-row">
+              <input type="text" 
+                     id="full-chat-input" 
+                     class="chat-input-field" 
+                     placeholder="Ask about equations, proofs, code, or intuition..."
+                     onkeydown="if(event.key==='Enter') { window.aiCopilot.sendMessage(this.value, 'copilot-messages-container'); this.value=''; }">
+              <button class="btn btn-primary" onclick="const el=document.getElementById('full-chat-input'); window.aiCopilot.sendMessage(el.value, 'copilot-messages-container'); el.value='';">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PANEL 8: SAVED LIBRARY
+           ======================================================== -->
+      <section class="view-panel" id="panel-saved">
+        <div style="margin-bottom: 24px;">
+          <h1 style="font-size: 26px; margin-bottom: 6px;" data-i18n="savedLibrary">Saved Educational Library</h1>
+          <p style="color: var(--text-secondary); font-size: 14px;">Access bookmarked lecture lessons, generated study notes, and diagnostic test records.</p>
+        </div>
+
+        <div class="saved-items-grid">
+          <div>
+            <h3 style="font-size: 18px; margin-bottom: 16px;"><i class="fas fa-bookmark text-primary"></i> Saved Video Lessons</h3>
+            <div id="saved-videos-list"></div>
+          </div>
+          <div>
+            <h3 style="font-size: 18px; margin-bottom: 16px;"><i class="fas fa-file-invoice text-cyan"></i> Synthesized AI Study Notes</h3>
+            <div id="saved-notes-list"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ================== FLOATING AI COPILOT WIDGET ================== -->
+  <button class="floating-copilot-toggle-btn" onclick="window.app.toggleFloatingCopilot()" title="Ask LearnStream AI Tutor">
+    <i class="fas fa-sparkles"></i>
+  </button>
+
+  <div class="floating-copilot-widget" id="floating-copilot-widget">
+    <div class="copilot-chat-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-brain text-primary"></i>
+        <strong style="font-size: 13.5px;">AI Tutor Copilot</strong>
+      </div>
+      <button onclick="window.app.toggleFloatingCopilot()" style="color: var(--text-muted); font-size: 16px;">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="copilot-messages-container" id="floating-copilot-messages"></div>
+    <div class="chat-input-row" style="padding: 10px 14px;">
+      <input type="text" 
+             id="floating-chat-input" 
+             class="chat-input-field" 
+             placeholder="Ask a question..."
+             onkeydown="if(event.key==='Enter') { window.aiCopilot.sendMessage(this.value, 'floating-copilot-messages'); this.value=''; }">
+      <button class="btn btn-primary btn-sm" onclick="const el=document.getElementById('floating-chat-input'); window.aiCopilot.sendMessage(el.value, 'floating-copilot-messages'); el.value='';">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================== VIDEO PLAYER & AI ANALYSIS MODAL ================== -->
+  <div class="modal-overlay" id="video-player-modal">
+    <div class="video-modal-dialog">
+      <div class="video-modal-player-wrap">
+        <iframe id="modal-video-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="video-modal-details">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+          <div>
+            <h2 id="modal-video-title" style="font-size: 20px;">Video Title</h2>
+            <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+              By <span id="modal-video-channel" style="color: var(--text-primary); font-weight: 600;">Channel</span> • 
+              <span id="modal-video-match" style="color: var(--accent-emerald); font-weight: 600;">98% Match</span>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="window.app.closeVideoModal()">
+            <i class="fas fa-times"></i> Close
+          </button>
+        </div>
+
+        <!-- Timestamps -->
+        <h4 style="font-size: 14px; margin-top: 16px; margin-bottom: 8px;" data-i18n="timestamps">Curated Timestamps</h4>
+        <div class="timestamps-scroll-row" id="modal-timestamps-list"></div>
+
+        <!-- Key Takeaways -->
+        <h4 style="font-size: 14px; margin-top: 16px; margin-bottom: 8px;" data-i18n="keyTakeaways">AI Key Takeaways</h4>
+        <ul id="modal-takeaways-list" style="list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 13.5px; color: var(--text-secondary);"></ul>
+
+        <div style="margin-top: 20px; display: flex; gap: 12px;">
+          <button class="btn btn-primary" onclick="window.app.closeVideoModal(); window.app.generateNotesFromVideo(window.app.activeVideo.id)">
+            <i class="fas fa-file-alt"></i> Generate Full Notes from Lesson
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== VOICE SEARCH MODAL ================== -->
+  <div class="modal-overlay" id="voice-search-modal">
+    <div class="voice-search-dialog">
+      <div class="brand-icon-wrap" style="margin: 0 auto 16px; width: 56px; height: 56px; font-size: 24px;">
+        <i class="fas fa-microphone"></i>
+      </div>
+      <h3 style="font-size: 20px;" data-i18n="voicePrompt">Voice Search Active</h3>
+      <p style="font-size: 13px; color: var(--text-muted);" id="voice-modal-status">Listening for educational query...</p>
+
+      <div class="voice-wave-visualizer listening" id="voice-wave-visualizer">
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+      </div>
+
+      <div style="font-size: 15px; font-weight: 600; color: var(--accent-primary); min-height: 48px;" id="voice-modal-transcript">
+        "Speak your topic or question now..."
+      </div>
+
+      <div style="margin-top: 20px;">
+        <button class="btn btn-secondary" onclick="window.app.closeVoiceSearch()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== TEST SUBMIT CONFIRMATION MODAL ================== -->
+  <div class="modal-overlay" id="test-submit-modal">
+    <div class="voice-search-dialog" style="max-width: 480px; text-align: left;">
+      <h3 style="font-size: 20px; margin-bottom: 8px;"><i class="fas fa-clipboard-check text-primary"></i> Confirm Test Submission</h3>
+      <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 20px;">Review your exam summary before finalized submission:</p>
+
+      <div style="background: var(--bg-tertiary); padding: 16px; border-radius: var(--radius-md); margin-bottom: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13.5px;">
+        <div><strong>Answered:</strong> <span id="modal-stat-answered" style="color: #10b981; font-weight: 700;">0</span></div>
+        <div><strong>Unattempted:</strong> <span id="modal-stat-unanswered" style="color: #ef4444; font-weight: 700;">0</span></div>
+        <div><strong>Marked for Review:</strong> <span id="modal-stat-flagged" style="color: #f59e0b; font-weight: 700;">0</span></div>
+        <div><strong>Time Remaining:</strong> <span id="modal-stat-time-left" style="color: var(--accent-cyan); font-weight: 700;">20:00</span></div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button class="btn btn-secondary" onclick="document.getElementById('test-submit-modal').classList.remove('active')">
+          Return to Test
+        </button>
+        <button class="btn btn-primary" onclick="window.testEngine.finishTest()">
+          <i class="fas fa-check"></i> Final Submit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/translations.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/pdf.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/test-engine.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
